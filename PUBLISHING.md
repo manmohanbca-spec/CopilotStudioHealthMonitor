@@ -44,7 +44,7 @@ The XrmToolBox team and community expect a public repository with:
 - Source code
 - `README.md` with screenshot or feature description
 - MIT (or compatible) open-source `LICENSE`
-- Releases page (GitHub Releases, tagged `v1.0.0`)
+- Releases page (GitHub Releases, tagged `v1.0.3`)
 
 ### 4 — Plugin Metadata (already done)
 
@@ -78,14 +78,14 @@ All of these are already in place in `MyPlugin.cs`.
 # From the project root
 git init
 git add .
-git commit -m "Initial release v1.0.0"
+git commit -m "Initial release v1.0.3"
 git remote add origin https://github.com/YOUR_USERNAME/CopilotStudioHealthMonitor.git
 git push -u origin main
 ```
 
 6. Create a GitHub Release:
-   - Tag: `v1.0.0`
-   - Title: `v1.0.0 — Initial Release`
+   - Tag: `v1.0.3`
+   - Title: `v1.0.3`
    - Attach: `CopilotStudioHealthMonitor.dll` from `bin\Release\`
 
 ### Step 2 — Build the Release DLL
@@ -106,11 +106,11 @@ From `C:\Project\XRMToolbox Tools\CopilotStudioHealthMonitor\`:
 nuget pack CopilotStudioHealthMonitor.nuspec -OutputDirectory ..\NuGetPackages\
 ```
 
-This produces `CopilotStudioHealthMonitor.1.0.0.nupkg`.
+This produces `CopilotStudioHealthMonitor.1.0.3.nupkg`.
 
 Inspect the package to verify it contains the DLL in `lib\net462\`:
 ```powershell
-nuget verify ..\NuGetPackages\CopilotStudioHealthMonitor.1.0.0.nupkg
+nuget verify ..\NuGetPackages\CopilotStudioHealthMonitor.1.0.3.nupkg
 ```
 
 Or unzip the `.nupkg` (it's a zip) and inspect the folder structure.
@@ -118,7 +118,7 @@ Or unzip the `.nupkg` (it's a zip) and inspect the folder structure.
 ### Step 4 — Publish to NuGet.org
 
 ```powershell
-nuget push ..\NuGetPackages\CopilotStudioHealthMonitor.1.0.0.nupkg `
+nuget push ..\NuGetPackages\CopilotStudioHealthMonitor.1.0.3.nupkg `
     -ApiKey YOUR_NUGET_API_KEY `
     -Source https://api.nuget.org/v3/index.json
 ```
@@ -169,7 +169,7 @@ When you have a new version:
 3. Pack and push:
    ```powershell
    nuget pack CopilotStudioHealthMonitor.nuspec -OutputDirectory ..\NuGetPackages\
-   nuget push ..\NuGetPackages\CopilotStudioHealthMonitor.1.0.1.nupkg -ApiKey ... -Source https://api.nuget.org/v3/index.json
+   nuget push ..\NuGetPackages\CopilotStudioHealthMonitor.1.0.4.nupkg -ApiKey ... -Source https://api.nuget.org/v3/index.json
    ```
 
 4. XrmToolBox auto-detects the new version on nuget.org — no additional store submission needed for updates.
@@ -212,6 +212,6 @@ The ID `CopilotStudioHealthMonitor` must be unique on nuget.org. If it is alread
 - [ ] Plugin icon appears correctly in XrmToolBox (SmallImageBase64 + BigImageBase64)
 - [ ] `AssemblyVersion` and `AssemblyFileVersion` in `AssemblyInfo.cs` match `.nuspec` `<version>`
 - [ ] GitHub repository is public and has `README.md`, `LICENSE`, and a tagged release
-- [ ] `NuGetPackages\CopilotStudioHealthMonitor.1.0.0.nupkg` contains only `lib\net462\CopilotStudioHealthMonitor.dll` (no Xrm*.dll)
+- [ ] `NuGetPackages\CopilotStudioHealthMonitor.1.0.3.nupkg` contains only `lib\net462\CopilotStudioHealthMonitor.dll` (no Xrm*.dll)
 - [ ] Package published to nuget.org and visible at `https://www.nuget.org/packages/CopilotStudioHealthMonitor`
 - [ ] xrmtoolbox.com submission form completed and submitted

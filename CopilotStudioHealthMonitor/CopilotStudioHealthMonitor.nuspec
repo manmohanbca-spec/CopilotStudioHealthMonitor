@@ -32,12 +32,10 @@ Requires Dataverse online with Copilot Studio enabled.
     </description>
     <summary>Audit, secure and validate Copilot Studio agents across Power Platform environments from within XrmToolBox.</summary>
     <releaseNotes>
-1.0.0 — Initial release
-• Dashboard with KPI cards and risk-ranked agent table
-• Agent Inventory with real-time filter and component drill-down
-• Security Scanner with 4 checks and remediation steps
-• Deployment Readiness with optional target-org connection
-• ALM Diff for cross-environment component comparison
+1.0.3 — Fixed NuGet dependency ID to XrmToolBox for xrmtoolbox.com store compatibility
+1.0.2 — Flattened NuGet dependency format for store validator compatibility
+1.0.1 — Added 128x128 icon; fixed license expression and readme in package
+1.0.0 — Initial release: Dashboard, Agent Inventory, Security Scanner, Deployment Readiness, ALM Diff
     </releaseNotes>
 
     <!-- ── Classification ───────────────────────────────────────────── -->
