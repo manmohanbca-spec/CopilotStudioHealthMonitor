@@ -3,7 +3,7 @@
   <metadata>
     <!-- ── Identity ─────────────────────────────────────────────────── -->
     <id>CopilotStudioHealthMonitor</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <title>Copilot Studio Agent Health Monitor</title>
     <authors>Manmohan</authors>
     <owners>Manmohan</owners>
@@ -47,9 +47,7 @@ Requires Dataverse online with Copilot Studio enabled.
 
     <!-- ── XrmToolBox dependency ────────────────────────────────────── -->
     <dependencies>
-      <group targetFramework="net462">
-        <dependency id="McD1982.XrmToolBox" version="[1.2024.9.69,)" />
-      </group>
+      <dependency id="McD1982.XrmToolBox" version="1.2024.9.69" />
     </dependencies>
   </metadata>
 
