@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <!-- ── Identity ─────────────────────────────────────────────────── -->
     <id>CopilotStudioHealthMonitor</id>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <title>Copilot Studio Agent Health Monitor</title>
     <authors>Manmohan</authors>
     <owners>Manmohan</owners>
@@ -32,6 +32,7 @@ Requires Dataverse online with Copilot Studio enabled.
     </description>
     <summary>Audit, secure and validate Copilot Studio agents across Power Platform environments from within XrmToolBox.</summary>
     <releaseNotes>
+1.0.5 — Fixed NuGet dependency version format to [1.2024.9.69, ) minimum-version range; updated nuspec to 2013 schema; DLL target net472
 1.0.4 — Fixed DLL target path to lib\net452\Plugins per official XrmToolBox wiki
 1.0.3 — Fixed NuGet dependency ID to XrmToolBox for xrmtoolbox.com store compatibility
 1.0.2 — Flattened NuGet dependency format for store validator compatibility
@@ -46,13 +47,13 @@ Requires Dataverse online with Copilot Studio enabled.
 
     <!-- ── XrmToolBox dependency ────────────────────────────────────── -->
     <dependencies>
-      <dependency id="XrmToolBox" version="1.2024.9.69" />
+      <dependency id="XrmToolBox" version="[1.2024.9.69, )" />
     </dependencies>
   </metadata>
 
   <files>
-    <!-- Plugin DLL — XrmToolBox loads plugins from lib\net452\Plugins (official required path) -->
-    <file src="bin\Release\CopilotStudioHealthMonitor.dll" target="lib\net452\Plugins" />
+    <!-- Plugin DLL — must be in lib\net472\Plugins matching project TFM -->
+    <file src="bin\Release\CopilotStudioHealthMonitor.dll" target="lib\net472\Plugins" />
 
     <!-- Icon (required at package root for nuget.org display) -->
     <file src="..\icon.png" target="" />
