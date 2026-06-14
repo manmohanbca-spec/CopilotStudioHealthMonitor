@@ -11,6 +11,7 @@
     <!-- ── Links ────────────────────────────────────────────────────── -->
     <projectUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor</projectUrl>
     <license type="expression">MIT</license>
+    <icon>icon.png</icon>
     <readme>README.md</readme>
 
     <!-- ── Description ──────────────────────────────────────────────── -->
@@ -47,7 +48,7 @@ Requires Dataverse online with Copilot Studio enabled.
     <!-- ── XrmToolBox dependency ────────────────────────────────────── -->
     <dependencies>
       <group targetFramework="net462">
-        <dependency id="McD1982.XrmToolBox" version="1.2024.9.69" />
+        <dependency id="McD1982.XrmToolBox" version="[1.2024.9.69,)" />
       </group>
     </dependencies>
   </metadata>
@@ -55,6 +56,9 @@ Requires Dataverse online with Copilot Studio enabled.
   <files>
     <!-- Plugin DLL — XrmToolBox loads plugins from lib\net462 -->
     <file src="bin\Release\CopilotStudioHealthMonitor.dll" target="lib\net462" />
+
+    <!-- Icon (required at package root for nuget.org display) -->
+    <file src="..\icon.png" target="" />
 
     <!-- Documentation (README must be at package root for nuget.org display) -->
     <file src="..\README.md"    target="" />
