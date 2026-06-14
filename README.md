@@ -87,7 +87,7 @@ Score ≥ 85 = 🟢 Healthy · Score 60–84 = 🟡 Needs Attention · Score < 6
 
 ```powershell
 # Clone and build
-git clone https://github.com/manmohan-bca/CopilotStudioHealthMonitor.git
+git clone https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor.git
 cd CopilotStudioHealthMonitor
 
 # Build Release

@@ -10,9 +10,9 @@
 
     <!-- ── Links ────────────────────────────────────────────────────── -->
     <!-- Update these URLs once you create the GitHub repository -->
-    <projectUrl>https://github.com/manmohan-bca/CopilotStudioHealthMonitor</projectUrl>
-    <licenseUrl>https://github.com/manmohan-bca/CopilotStudioHealthMonitor/blob/main/LICENSE</licenseUrl>
-    <iconUrl>https://raw.githubusercontent.com/manmohan-bca/CopilotStudioHealthMonitor/main/icon.png</iconUrl>
+    <projectUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor</projectUrl>
+    <licenseUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor/blob/main/LICENSE</licenseUrl>
+    <iconUrl>https://raw.githubusercontent.com/manmohanbca-spec/CopilotStudioHealthMonitor/main/icon.png</iconUrl>
 
     <!-- ── Description ──────────────────────────────────────────────── -->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

@@ -60,7 +60,7 @@
 
 ### Option B — Manual (DLL drop)
 
-1. Download `CopilotStudioHealthMonitor.dll` from the [Releases page](https://github.com/manmohan-bca/CopilotStudioHealthMonitor/releases).
+1. Download `CopilotStudioHealthMonitor.dll` from the [Releases page](https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor/releases).
 2. Copy the DLL to:
    ```
    %APPDATA%\MscrmTools\XrmToolBox\Plugins\
