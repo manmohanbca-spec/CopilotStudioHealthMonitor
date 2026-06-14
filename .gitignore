@@ -1,0 +1,12 @@
+# Build output
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# NuGet pack output
+NuGetPackages/
+
+# Claude Code local session data
+.claude/

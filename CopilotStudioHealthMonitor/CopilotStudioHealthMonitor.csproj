@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+          Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CopilotStudioHealthMonitor</RootNamespace>
+    <AssemblyName>CopilotStudioHealthMonitor</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <!-- Framework assemblies resolved from installed v4.7.2 reference assemblies -->
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <!-- net462 DLLs — lower than target v4.7.2, resolve normally -->
+  <ItemGroup>
+    <Reference Include="Microsoft.Xrm.Sdk">
+      <HintPath>lib\Microsoft.Xrm.Sdk.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Crm.Sdk.Proxy">
+      <HintPath>lib\Microsoft.Crm.Sdk.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- XrmToolBox DLLs are net48 despite folder name — use ReferencePath to bypass
+       the framework-version check in ResolveAssemblyReference (MSB3274) -->
+  <ItemGroup>
+    <ReferencePath Include="$(MSBuildProjectDirectory)\lib\XrmToolBox.Extensibility.dll" />
+    <ReferencePath Include="$(MSBuildProjectDirectory)\lib\XrmToolBox.ToolLibrary.dll" />
+    <ReferencePath Include="$(MSBuildProjectDirectory)\lib\McTools.Xrm.Connection.dll" />
+    <ReferencePath Include="$(MSBuildProjectDirectory)\lib\McTools.Xrm.Connection.WinForms.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\AgentModel.cs" />
+    <Compile Include="Models\AgentSecurityResult.cs" />
+    <Compile Include="Models\AlmDiffResult.cs" />
+    <Compile Include="Models\BotComponentModel.cs" />
+    <Compile Include="Models\DeploymentCheckResult.cs" />
+    <Compile Include="Services\AgentInventoryService.cs" />
+    <Compile Include="Services\SecurityScannerService.cs" />
+    <Compile Include="Services\DeploymentReadinessService.cs" />
+    <Compile Include="Services\AlmDiffService.cs" />
+    <Compile Include="Controls\InventoryTab.cs" />
+    <Compile Include="Controls\InventoryTab.Designer.cs" />
+    <Compile Include="Controls\SecurityTab.cs" />
+    <Compile Include="Controls\SecurityTab.Designer.cs" />
+    <Compile Include="Controls\DeploymentTab.cs" />
+    <Compile Include="Controls\DeploymentTab.Designer.cs" />
+    <Compile Include="Controls\AlmDiffTab.cs" />
+    <Compile Include="Controls\AlmDiffTab.Designer.cs" />
+    <Compile Include="Controls\DashboardTab.cs" />
+    <Compile Include="Controls\DashboardTab.Designer.cs" />
+    <Compile Include="PluginControl.cs" />
+    <Compile Include="PluginControl.Designer.cs" />
+    <Compile Include="MyPlugin.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
