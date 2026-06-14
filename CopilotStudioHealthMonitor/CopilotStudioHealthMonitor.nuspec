@@ -3,7 +3,7 @@
   <metadata>
     <!-- ── Identity ─────────────────────────────────────────────────── -->
     <id>CopilotStudioHealthMonitor</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Copilot Studio Agent Health Monitor</title>
     <authors>Manmohan</authors>
     <owners>Manmohan</owners>
