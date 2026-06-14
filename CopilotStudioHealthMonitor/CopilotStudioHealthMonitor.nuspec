@@ -1,66 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
-    <!-- ── Identity ─────────────────────────────────────────────────── -->
     <id>CopilotStudioHealthMonitor</id>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <title>Copilot Studio Agent Health Monitor</title>
     <authors>Manmohan</authors>
     <owners>Manmohan</owners>
-
-    <!-- ── Links ────────────────────────────────────────────────────── -->
     <projectUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor</projectUrl>
-    <license type="expression">MIT</license>
-    <icon>icon.png</icon>
-    <readme>README.md</readme>
-
-    <!-- ── Description ──────────────────────────────────────────────── -->
+    <iconUrl>https://raw.githubusercontent.com/manmohanbca-spec/CopilotStudioHealthMonitor/master/icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>
-An XrmToolBox plugin to audit, secure, and validate Microsoft Copilot Studio agents
-across Power Platform / Dataverse environments.
+    <description>An XrmToolBox plugin to audit, secure, and validate Microsoft Copilot Studio agents across Power Platform / Dataverse environments.
 
 Features:
-• Dashboard — KPI cards and risk-ranked agent table with health colour coding
-• Agent Inventory — Full agent list with filter, owner info, auth mode, solution membership, and expandable bot components
-• Security Scanner — Automated 0-100 security score for every agent (SEC-01 No Auth, SEC-03 HTTP Actions, SEC-05 Orphaned Owner, SEC-07 Not in Solution) with per-issue remediation steps
-• Deployment Readiness — Four pre-deployment checks (DEP-01 through DEP-04) with optional target-org verification
-• ALM Diff — Side-by-side bot component comparison across two environments (Match / Content Differs / Missing in Target / Only in Target)
+- Dashboard: KPI cards and risk-ranked agent table with health colour coding
+- Agent Inventory: Full agent list with filter, owner info, auth mode, solution membership, and expandable bot components
+- Security Scanner: Automated 0-100 security score for every agent (SEC-01 No Auth, SEC-03 HTTP Actions, SEC-05 Orphaned Owner, SEC-07 Not in Solution) with per-issue remediation steps
+- Deployment Readiness: Four pre-deployment checks (DEP-01 through DEP-04) with optional target-org verification
+- ALM Diff: Side-by-side bot component comparison across two environments (Match / Content Differs / Missing in Target / Only in Target)
 
-Read-only — never writes to your environment.
-Requires Dataverse online with Copilot Studio enabled.
-    </description>
+Read-only - never writes to your environment. Requires Dataverse online with Copilot Studio enabled.</description>
     <summary>Audit, secure and validate Copilot Studio agents across Power Platform environments from within XrmToolBox.</summary>
     <releaseNotes>
-1.0.5 — Fixed NuGet dependency version format to [1.2024.9.69, ) minimum-version range; updated nuspec to 2013 schema; DLL target net472
-1.0.4 — Fixed DLL target path to lib\net452\Plugins per official XrmToolBox wiki
-1.0.3 — Fixed NuGet dependency ID to XrmToolBox for xrmtoolbox.com store compatibility
-1.0.2 — Flattened NuGet dependency format for store validator compatibility
-1.0.1 — Added 128x128 icon; fixed license expression and readme in package
-1.0.0 — Initial release: Dashboard, Agent Inventory, Security Scanner, Deployment Readiness, ALM Diff
+1.0.6 - Switched to iconUrl and removed NuGet 5+ features (icon/license/readme elements) to fix xrmtoolbox.com validator dependency format
+1.0.5 - Updated nuspec to 2013 schema; DLL target net472
+1.0.4 - Fixed DLL target path to lib\net452\Plugins
+1.0.3 - Fixed NuGet dependency ID to XrmToolBox
+1.0.2 - Flattened NuGet dependency format
+1.0.1 - Added 128x128 icon; fixed license expression and readme in package
+1.0.0 - Initial release: Dashboard, Agent Inventory, Security Scanner, Deployment Readiness, ALM Diff
     </releaseNotes>
-
-    <!-- ── Classification ───────────────────────────────────────────── -->
     <copyright>Copyright (c) 2026 Manmohan</copyright>
     <language>en-US</language>
     <tags>XrmToolBox Dataverse PowerPlatform CopilotStudio MicrosoftCopilot Security ALM Deployment Bot Plugin Dynamics365</tags>
-
-    <!-- ── XrmToolBox dependency ────────────────────────────────────── -->
     <dependencies>
-      <dependency id="XrmToolBox" version="[1.2024.9.69, )" />
+      <dependency id="XrmToolBox" version="1.2024.9.69" />
     </dependencies>
   </metadata>
-
   <files>
-    <!-- Plugin DLL — must be in lib\net472\Plugins matching project TFM -->
-    <file src="bin\Release\CopilotStudioHealthMonitor.dll" target="lib\net472\Plugins" />
-
-    <!-- Icon (required at package root for nuget.org display) -->
-    <file src="..\icon.png" target="" />
-
-    <!-- Documentation (README must be at package root for nuget.org display) -->
-    <file src="..\README.md"    target="" />
-    <file src="..\USER_GUIDE.md" target="content" />
-    <file src="..\LICENSE"      target="content" />
+    <file src="bin\Release\CopilotStudioHealthMonitor.dll" target="lib\net452\Plugins" />
   </files>
 </package>
