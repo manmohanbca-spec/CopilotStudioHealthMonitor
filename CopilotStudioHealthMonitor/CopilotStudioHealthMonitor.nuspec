@@ -9,10 +9,9 @@
     <owners>Manmohan</owners>
 
     <!-- ── Links ────────────────────────────────────────────────────── -->
-    <!-- Update these URLs once you create the GitHub repository -->
     <projectUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor</projectUrl>
-    <licenseUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor/blob/main/LICENSE</licenseUrl>
-    <iconUrl>https://raw.githubusercontent.com/manmohanbca-spec/CopilotStudioHealthMonitor/main/icon.png</iconUrl>
+    <license type="expression">MIT</license>
+    <readme>README.md</readme>
 
     <!-- ── Description ──────────────────────────────────────────────── -->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -47,7 +46,9 @@ Requires Dataverse online with Copilot Studio enabled.
 
     <!-- ── XrmToolBox dependency ────────────────────────────────────── -->
     <dependencies>
-      <dependency id="McD1982.XrmToolBox" version="1.2024.9.69" />
+      <group targetFramework="net462">
+        <dependency id="McD1982.XrmToolBox" version="1.2024.9.69" />
+      </group>
     </dependencies>
   </metadata>
 
@@ -55,8 +56,8 @@ Requires Dataverse online with Copilot Studio enabled.
     <!-- Plugin DLL — XrmToolBox loads plugins from lib\net462 -->
     <file src="bin\Release\CopilotStudioHealthMonitor.dll" target="lib\net462" />
 
-    <!-- Documentation -->
-    <file src="..\README.md"    target="content" />
+    <!-- Documentation (README must be at package root for nuget.org display) -->
+    <file src="..\README.md"    target="" />
     <file src="..\USER_GUIDE.md" target="content" />
     <file src="..\LICENSE"      target="content" />
   </files>
