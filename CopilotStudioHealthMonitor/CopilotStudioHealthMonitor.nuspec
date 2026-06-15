@@ -2,12 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>CopilotStudioHealthMonitor</id>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <title>Copilot Studio Agent Health Monitor</title>
     <authors>Manmohan</authors>
     <owners>Manmohan</owners>
     <projectUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/manmohanbca-spec/CopilotStudioHealthMonitor/master/icon.png</iconUrl>
+    <licenseUrl>https://raw.githubusercontent.com/manmohanbca-spec/CopilotStudioHealthMonitor/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An XrmToolBox plugin to audit, secure, and validate Microsoft Copilot Studio agents across Power Platform / Dataverse environments.
 
@@ -21,6 +22,7 @@ Features:
 Read-only - never writes to your environment. Requires Dataverse online with Copilot Studio enabled.</description>
     <summary>Audit, secure and validate Copilot Studio agents across Power Platform environments from within XrmToolBox.</summary>
     <releaseNotes>
+1.0.7 - Wrap XrmToolBox dependency in &lt;group targetFramework="any"&gt; with range version [1.2024.9.69, ) so v2 OData emits XrmToolBox:[1.2024.9.69, ): (3 parts) required by xrmtoolbox.com validator
 1.0.6 - Switched to iconUrl and removed NuGet 5+ features (icon/license/readme elements) to fix xrmtoolbox.com validator dependency format
 1.0.5 - Updated nuspec to 2013 schema; DLL target net472
 1.0.4 - Fixed DLL target path to lib\net452\Plugins
@@ -33,7 +35,9 @@ Read-only - never writes to your environment. Requires Dataverse online with Cop
     <language>en-US</language>
     <tags>XrmToolBox Dataverse PowerPlatform CopilotStudio MicrosoftCopilot Security ALM Deployment Bot Plugin Dynamics365</tags>
     <dependencies>
-      <dependency id="XrmToolBox" version="1.2024.9.69" />
+      <group targetFramework="any">
+        <dependency id="XrmToolBox" version="[1.2024.9.69, )" />
+      </group>
     </dependencies>
   </metadata>
   <files>
