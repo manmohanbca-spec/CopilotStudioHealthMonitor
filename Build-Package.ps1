@@ -27,6 +27,7 @@ C:\Tools\nuget.exe pack (Split-Path $spec -Leaf) -OutputDirectory $out
 Pop-Location
 
 # 4. Patch embedded nuspec inside .nupkg to restore the <group> wrapper
+Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zip = [System.IO.Compression.ZipFile]::Open($nupkg, [System.IO.Compression.ZipArchiveMode]::Update)
 $entry = $zip.Entries | Where-Object { $_.Name -like "*.nuspec" }
