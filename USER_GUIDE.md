@@ -1,6 +1,6 @@
 # Copilot Studio Agent Health Monitor — User Guide
 
-**Version 1.1.0 | XrmToolBox Plugin | Power Platform**
+**Version 1.2.0 | XrmToolBox Plugin | Power Platform**
 
 ---
 
@@ -18,10 +18,11 @@
 10. [Adoption & Lifecycle](#10-adoption--lifecycle)
 11. [Deployment Readiness](#11-deployment-readiness)
 12. [ALM Diff](#12-alm-diff)
-13. [Governance Report](#13-governance-report)
-14. [Exporting Data](#14-exporting-data)
-15. [Troubleshooting](#15-troubleshooting)
-16. [Known Limitations](#16-known-limitations)
+13. [ALM & Dependencies](#13-alm--dependencies)
+14. [Governance Report](#14-governance-report)
+15. [Exporting Data](#15-exporting-data)
+16. [Troubleshooting](#16-troubleshooting)
+17. [Known Limitations](#17-known-limitations)
 
 ---
 
@@ -40,6 +41,7 @@
 | **Adoption & Lifecycle** | Flags dormant and orphaned agents (agent sprawl) for license cleanup and risk reduction |
 | **Deployment Readiness** | Runs four pre-flight checks before promoting an agent to a target environment |
 | **ALM Diff** | Side-by-side component comparison of the same agent across two Dataverse environments |
+| **ALM & Dependencies** | Maps each agent's solution membership and forward dependency graph, flagging ALM transport risks before you deploy |
 | **Governance Report** | One-click self-contained HTML report (KPIs + Microsoft Top-10 scorecard) for security and leadership |
 | **Dashboard** | KPI cards and a risk-ranked table summarising the health of all agents at once |
 
@@ -135,7 +137,7 @@ Select any agent row to enable:
 
 ### Export Governance Report
 
-- **📄 Export Governance Report** — generates a single self-contained HTML governance report covering the whole environment (KPI summary, Microsoft Top-10 scorecard, and per-section tables for security, sharing, knowledge, and adoption). See [Governance Report](#13-governance-report) for details.
+- **📄 Export Governance Report** — generates a single self-contained HTML governance report covering the whole environment (KPI summary, Microsoft Top-10 scorecard, and per-section tables for security, sharing, knowledge, and adoption). See [Governance Report](#14-governance-report) for details.
 
 ---
 
@@ -493,7 +495,49 @@ The ALM Diff tab performs a component-level comparison of the **same agent** acr
 
 ---
 
-## 13. Governance Report
+## 13. ALM & Dependencies
+
+The **🧬 ALM & Dependencies** tab maps each agent's **solution membership** and its **forward dependency graph** — everything that must travel with the agent to run in another environment — and flags the ALM transport risks that break a deployment. Unlike ALM Diff (which compares one agent across two orgs), this tab audits the **connected environment only** and needs no second connection.
+
+### Running the Map
+
+Click **🧬 Run ALM & Dependency Map**. For every agent the plugin reads its solution memberships and queries the Dataverse dependency API (`RetrieveRequiredComponents`), then enriches the result with knowledge-source and MCP/custom-tool dependencies parsed from the agent's components.
+
+### Columns
+
+| Column | Description |
+|---|---|
+| **Agent Name** | Display name of the Copilot Studio agent |
+| **Owner** | Owner full name |
+| **Solution(s)** | ❌ None / ⚠️ Default only / the unmanaged solution name(s) the agent belongs to |
+| **Dependencies** | Count of dependencies (notes how many are unpackaged or unconfigured) |
+| **Risk** | ✅ None / 🟢 Low / 🟡 Medium / 🔴 High |
+| **Flags** | The ALM-0x flag codes that fired |
+
+Click any agent row to expand a detail tree: **📦 Solutions**, **🔗 Dependencies** (each with a health icon — ✅ OK / ⚠️ Unconfigured / ❌ Not packaged / 🌐 External), **❌ Missing / unconfigured**, and **⚠️ Risk flags**. Dependencies resolve to friendly names (connection references, flows, environment variables, child agents), not GUIDs.
+
+### Risk Flags
+
+| Flag | Severity | Meaning |
+|---|---|---|
+| **ALM-01** | 🔴 High | Agent is not in any solution — it cannot be moved between environments via ALM |
+| **ALM-02** | 🔴 High | Agent is orphaned in the Default/Active layer only — add it to an unmanaged solution before it can be exported |
+| **ALM-03** | 🔴 High | One or more required components are not packaged in the agent's unmanaged solution and will be missing on import |
+| **ALM-04** | 🔴 High | A connection reference the agent uses has no connection mapped — actions will fail until configured |
+| **ALM-05** | 🟡 Medium | An environment variable the agent depends on has no value in this environment |
+| **ALM-06** | 🟡 Medium | A cloud flow the agent calls is not co-packaged in its solution |
+| **ALM-07** | 🟡 Medium | A knowledge target points at an external/hardcoded site (e.g. public web, SharePoint URL) that won't repoint on import |
+| **ALM-08** | 🟢 Low | Agent exists only as a managed component here — edit it upstream (development) and redeploy |
+
+### Exporting Results
+
+Click **📥 Export CSV** to save the ALM & dependency map — agent, owner, solutions, managed/unmanaged, dependency counts, risk, flags, and the full dependency list (pipe-separated).
+
+> **Notes:** Connection references and environment variables are matched by object id against the environment's full lists, so their configured/value health is accurate regardless of component-type encoding. A dependency on a component type the plugin doesn't yet classify is shown honestly as "Component type N" rather than dropped.
+
+---
+
+## 14. Governance Report
 
 The **📄 Export Governance Report** button on the **Dashboard** produces a single, self-contained HTML governance report you can hand to security or leadership — no plugin required to open it.
 
@@ -501,12 +545,13 @@ The **📄 Export Governance Report** button on the **Dashboard** produces a sin
 
 | Section | Contents |
 |---|---|
-| **KPI summary** | The Dashboard headline numbers (total agents, critical agents, no-auth agents, orphaned owners, dormant / orphaned agents, broadly-shared agents, public-web grounding) |
+| **KPI summary** | The Dashboard headline numbers (total agents, critical agents, no-auth agents, orphaned owners, dormant / orphaned agents, broadly-shared agents, public-web grounding, not ALM-deployable) |
 | **Microsoft Top-10 scorecard** | How the environment scores against each of Microsoft's *Top 10 Copilot Studio agent security risks*, with the number of agents affected by each |
 | **Security** | Per-agent security findings with their Top-10 risk numbers |
 | **Sharing** | Per-agent sharing/exposure results |
 | **Knowledge** | Per-agent knowledge-source inventory |
 | **Adoption** | Per-agent staleness (Active / Watch / Dormant / Orphaned) |
+| **ALM & dependencies** | Per-agent solution membership, dependency counts, unpackaged dependencies, and ALM risk flags |
 
 ### Generating the report
 
@@ -517,7 +562,7 @@ The **📄 Export Governance Report** button on the **Dashboard** produces a sin
 
 ---
 
-## 14. Exporting Data
+## 15. Exporting Data
 
 ### Agent Inventory CSV
 
@@ -542,13 +587,19 @@ Exports the per-agent knowledge inventory: agent name, owner, source count, sour
 
 Fields include: agent name, owner, owner-disabled, status, in-solution, last edited, days since edit, last used, 30-/90-day conversation counts (when transcript data is available), lifecycle label, and the verdict reason.
 
+### ALM & Dependencies CSV
+
+Fields: `Agent, Owner, Solutions, Managed?, Dependency Count, Not Packaged, Unconfigured, Risk, Flags, Dependencies`
+
+- Dependencies are pipe-separated (`|`) within a single cell, each shown as `type: name (health)`
+
 ### Governance Report (HTML)
 
-A one-click, self-contained HTML report from the Dashboard. See [Governance Report](#13-governance-report).
+A one-click, self-contained HTML report from the Dashboard. See [Governance Report](#14-governance-report).
 
 ---
 
-## 15. Troubleshooting
+## 16. Troubleshooting
 
 ### No agents appear after connecting
 
@@ -581,7 +632,7 @@ A one-click, self-contained HTML report from the Dashboard. See [Governance Repo
 
 ---
 
-## 16. Known Limitations
+## 17. Known Limitations
 
 | Limitation | Details |
 |---|---|
@@ -591,6 +642,7 @@ A one-click, self-contained HTML report from the Dashboard. See [Governance Repo
 | **Copilot Studio Online Only** | The `bot` and `botcomponent` Dataverse tables only exist in Power Platform online environments. On-premise Dynamics 365 installations are not supported. |
 | **Conversation Transcript Retention** | The Adoption & Lifecycle usage signals (last used date and 30-/90-day conversation counts) require the `conversationtranscript` table to be retained in the tenant. When transcripts are not retained, the staleness verdict is derived from owner-disabled status and last-edited age alone. |
 | **Security content heuristics** | SEC-04 (email), SEC-06 (maker auth), and SEC-08 (MCP/tools) detect their risks by matching markers in the agent's component definition. They fail safe — no match means no flag — so a novel agent format may need the marker set extended. |
+| **Dependency component types** | The ALM & Dependencies tab resolves connection references, environment variables, cloud flows, and child agents to friendly names. Other component types returned by the dependency API are listed honestly as "Component type N" rather than dropped; connection-reference / environment-variable health is matched by object id, so it stays accurate regardless. |
 | **Read-Only** | This plugin is read-only — every tab (including Security, Sharing, Knowledge, and Adoption) only reads from Dataverse and never writes to or modifies data in your environment. |
 
 ---

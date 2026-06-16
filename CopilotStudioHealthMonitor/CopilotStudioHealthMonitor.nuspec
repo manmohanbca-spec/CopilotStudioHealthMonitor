@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>CopilotStudioHealthMonitor</id>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <title>Copilot Studio Agent Health Monitor</title>
     <authors>Manmohan</authors>
     <owners>Manmohan</owners>
@@ -21,11 +21,13 @@ Features:
 - Adoption &amp; Lifecycle: Flags dormant and orphaned agents using owner/edit-age signals plus real conversation usage when available
 - Deployment Readiness: Four pre-deployment checks (DEP-01 through DEP-04) with optional target-org verification
 - ALM Diff: Side-by-side bot component comparison across two environments (Match / Content Differs / Missing in Target / Only in Target)
+- ALM &amp; Dependencies: Per-agent solution membership and forward dependency map (connection references, environment variables, cloud flows, knowledge targets, MCP tools) with ALM transport risk flags (orphaned/Default-only agents, unpackaged or unconfigured dependencies)
 - Governance Report: Self-contained HTML report aggregating all findings with a Microsoft Top-10 scorecard
 
 Read-only - never writes to your environment. Requires Dataverse online with Copilot Studio enabled.</description>
     <summary>Audit, secure and validate Copilot Studio agents across Power Platform environments from within XrmToolBox.</summary>
     <releaseNotes>
+1.2.0 - New "ALM &amp; Dependencies" tab. Maps each agent's solution membership (managed/unmanaged, Default-only orphans) and forward dependency graph using the Dataverse RetrieveRequiredComponents API plus content analysis: connection references, environment variables, cloud flows, knowledge-source targets, and MCP/custom tools. Flags ALM transport risks ALM-01 through ALM-08 (not in a solution, orphaned in Default, dependencies not packaged with the agent, unconfigured connection references, environment variables without values, cloud flow not co-packaged, external grounding targets, managed-only). Adds a "Not ALM-deployable" KPI and an ALM section to the Governance Report. Read-only.
 1.1.0 - Major feature release. New tabs: Sharing &amp; Access audit, Knowledge Sources inventory, and Adoption &amp; Lifecycle (dormant/orphaned-agent analytics). Security Scanner expanded to Microsoft's Top 10 Copilot Studio agent security risks: added SEC-04 (email exfiltration), SEC-06 (maker authentication), SEC-08 (MCP/custom tools), SEC-10 (hardcoded secrets), and hardened SEC-03 (insecure HTTP). New one-click Governance Report (HTML) export from the Dashboard, plus a Dormant/Orphaned KPI card.
 1.0.8 - Use real XrmToolBox dependency version 1.2023.10.67 (1.2024.9.69 didn't exist on nuget.org which caused xrmtoolbox.com validator to reject as "version dependency missing")
 1.0.7 - Wrap XrmToolBox dependency in &lt;group targetFramework="any"&gt; with range version

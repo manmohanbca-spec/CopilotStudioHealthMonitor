@@ -22,13 +22,15 @@ namespace CopilotStudioHealthMonitor.Services
             List<AgentSecurityResult> security,
             List<AgentSharingResult> sharing,
             List<KnowledgeAuditResult> knowledge,
-            List<AgentUsageResult> usage)
+            List<AgentUsageResult> usage,
+            List<AgentAlmResult> alm = null)
         {
             agents = agents ?? new List<AgentModel>();
             security = security ?? new List<AgentSecurityResult>();
             sharing = sharing ?? new List<AgentSharingResult>();
             knowledge = knowledge ?? new List<KnowledgeAuditResult>();
             usage = usage ?? new List<AgentUsageResult>();
+            alm = alm ?? new List<AgentAlmResult>();
 
             var sb = new StringBuilder();
             sb.Append(@"<!DOCTYPE html><html><head><meta charset='utf-8'>");
@@ -58,6 +60,7 @@ th{background:#eef3f8;font-weight:600;}
             int dormant = usage.Count(u => u.StalenessScore >= 2);
             int broadlyShared = sharing.Count(s => s.RiskScore >= 3);
             int publicWeb = knowledge.Count(k => k.PublicWebCount > 0);
+            int notDeployable = alm.Count(a => a.InNoSolution || a.OnlyInDefault);
 
             sb.Append("<div class='cards'>");
             sb.Append(Card(agents.Count, "Total agents"));
@@ -67,6 +70,7 @@ th{background:#eef3f8;font-weight:600;}
             sb.Append(Card(dormant, "Dormant / orphaned"));
             sb.Append(Card(broadlyShared, "Shared to team/group"));
             sb.Append(Card(publicWeb, "Public-web grounding"));
+            sb.Append(Card(notDeployable, "Not ALM-deployable"));
             sb.Append("</div>");
 
             // ---- Top 10 scorecard ----
@@ -150,6 +154,24 @@ th{background:#eef3f8;font-weight:600;}
                     sb.Append($"<tr class='{cls}'><td>{Enc(u.AgentName)}</td><td>{Enc(u.OwnerName)}</td>" +
                               $"<td>{Enc(u.LastEditedDisplay)}</td><td>{Enc(u.LastUsedDisplay)}</td>" +
                               $"<td>{Enc(u.StalenessLabel)}</td><td class='small'>{Enc(u.Reason)}</td></tr>");
+                }
+                sb.Append("</table>");
+            }
+
+            // ---- ALM & dependencies ----
+            sb.Append("<h2>ALM &amp; dependencies</h2>");
+            var almFlagged = alm.Where(a => a.RiskScore > 0).OrderByDescending(a => a.RiskScore).ToList();
+            if (almFlagged.Count == 0)
+                sb.Append("<p class='small'>No ALM or dependency risks detected (or ALM mapping was not run).</p>");
+            else
+            {
+                sb.Append("<table><tr><th>Agent</th><th>Solution(s)</th><th>Dependencies</th><th>Unpackaged</th><th>Risk</th><th>Flags</th></tr>");
+                foreach (var a in almFlagged)
+                {
+                    var cls = a.RiskScore >= 3 ? "r" : a.RiskScore == 2 ? "y" : "g";
+                    sb.Append($"<tr class='{cls}'><td>{Enc(a.AgentName)}</td><td>{Enc(a.SolutionDisplay)}</td>" +
+                              $"<td>{a.DependencyCount}</td><td>{a.NotPackagedCount}</td>" +
+                              $"<td>{Enc(a.RiskLabel)}</td><td class='small'>{Enc(a.FlagsDisplay)}</td></tr>");
                 }
                 sb.Append("</table>");
             }

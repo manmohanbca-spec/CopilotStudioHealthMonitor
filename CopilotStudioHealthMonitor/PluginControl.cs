@@ -18,6 +18,7 @@ namespace CopilotStudioHealthMonitor
         private SecurityScannerService _securityScanner;
         private DeploymentReadinessService _deploymentService;
         private AlmDiffService _almDiffService;
+        private AlmDependencyService _almDependencyService;
         private SharingAuditService _sharingService;
         private KnowledgeSourceInventoryService _knowledgeService;
         private UsageAnalyticsService _usageService;
@@ -41,6 +42,7 @@ namespace CopilotStudioHealthMonitor
             deploymentTab.ConnectTargetOrgRequested += OnConnectTargetOrgRequested;
             almDiffTab.ConnectTargetOrgRequested += OnConnectTargetOrgRequested;
             almDiffTab.RunDiffRequested += OnRunDiffRequested;
+            almMapperTab.RunAlmMappingRequested += OnRunAlmMappingRequested;
             dashboardTab.RefreshDashboardRequested += OnRefreshDashboardRequested;
             dashboardTab.ExportReportRequested += OnExportReportRequested;
             dashboardTab.JumpToSecurityRequested += OnJumpToSecurityRequested;
@@ -69,6 +71,7 @@ namespace CopilotStudioHealthMonitor
             _securityScanner = new SecurityScannerService(_inventoryService);
             _deploymentService = new DeploymentReadinessService(newService);
             _almDiffService = new AlmDiffService(_inventoryService);
+            _almDependencyService = new AlmDependencyService(_inventoryService, newService);
             _sharingService = new SharingAuditService(newService);
             _knowledgeService = new KnowledgeSourceInventoryService(newService);
             _usageService = new UsageAnalyticsService(newService);
@@ -77,6 +80,7 @@ namespace CopilotStudioHealthMonitor
             securityTab.SetService(_securityScanner);
             deploymentTab.SetService(_deploymentService);
             almDiffTab.SetService(_almDiffService);
+            almMapperTab.SetService(_almDependencyService);
             sharingTab.SetService(_sharingService);
             knowledgeSourceTab.SetService(_knowledgeService);
             usageTab.SetService(_usageService);
@@ -247,6 +251,39 @@ namespace CopilotStudioHealthMonitor
 
                     var results = e.Result as List<KnowledgeAuditResult>;
                     knowledgeSourceTab.PopulateResults(results);
+                }
+            });
+        }
+
+        private void OnRunAlmMappingRequested(object sender, RunAlmMappingEventArgs e)
+        {
+            RunAlmMapping();
+        }
+
+        private void RunAlmMapping()
+        {
+            if (_almDependencyService == null || _inventoryService == null) return;
+
+            WorkAsync(new WorkAsyncInfo("Mapping ALM posture & dependencies...", (e) =>
+            {
+                var agents = _inventoryService.GetAllAgents();
+                e.Result = _almDependencyService.MapAgents(agents);
+            })
+            {
+                PostWorkCallBack = (e) =>
+                {
+                    if (e.Error != null)
+                    {
+                        MessageBox.Show(
+                            $"ALM mapping failed:\n{e.Error.Message}",
+                            "ALM Mapper Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var results = e.Result as List<AgentAlmResult>;
+                    almMapperTab.PopulateResults(results);
                 }
             });
         }
@@ -434,8 +471,9 @@ namespace CopilotStudioHealthMonitor
                 var sharing = _sharingService.AuditAgents(agents);
                 var knowledge = _knowledgeService.InventoryAgents(agents);
                 var usage = _usageService.AnalyzeAgents(agents);
+                var alm = _almDependencyService.MapAgents(agents);
                 w.Result = _reportService.BuildHtml(
-                    orgName, DateTime.UtcNow, agents, security, sharing, knowledge, usage);
+                    orgName, DateTime.UtcNow, agents, security, sharing, knowledge, usage, alm);
             })
             {
                 PostWorkCallBack = (w) =>

@@ -21,6 +21,7 @@
 | **Adoption & Lifecycle** | Flags dormant and orphaned agents (agent sprawl) using owner status + last-edited age, and — when the conversation-transcript table is retained — real usage (last-used date + 30/90-day conversation counts), with a staleness label per agent |
 | **Deployment Readiness** | 4 pre-deployment checks for a selected agent — optionally verified against a connected target environment (UAT/PROD) |
 | **ALM Diff** | Side-by-side bot component comparison across two environments: Match / Content Differs / Missing in Target / Only in Target |
+| **ALM & Dependencies** | Per-agent solution membership (managed/unmanaged, Default-only orphans) and a forward dependency map — connection references, environment variables, cloud flows, knowledge targets, MCP tools — with ALM transport risk flags (ALM-01…08) for dependencies that are unpackaged, unconfigured, or won't repoint across environments |
 | **Governance Report** | One-click, self-contained HTML governance report (KPI summary + Microsoft Top-10 scorecard + per-section tables for security, sharing, knowledge, and adoption) to hand to security / leadership |
 
 ---

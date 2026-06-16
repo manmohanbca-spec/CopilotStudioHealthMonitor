@@ -30,6 +30,8 @@ namespace CopilotStudioHealthMonitor
             this.deploymentTab = new CopilotStudioHealthMonitor.Controls.DeploymentTab();
             this.tabAlmDiff = new System.Windows.Forms.TabPage();
             this.almDiffTab = new CopilotStudioHealthMonitor.Controls.AlmDiffTab();
+            this.tabAlmMapper = new System.Windows.Forms.TabPage();
+            this.almMapperTab = new CopilotStudioHealthMonitor.Controls.AlmMapperTab();
             this.tabMain.SuspendLayout();
             this.tabDashboard.SuspendLayout();
             this.tabInventory.SuspendLayout();
@@ -39,6 +41,7 @@ namespace CopilotStudioHealthMonitor
             this.tabUsage.SuspendLayout();
             this.tabDeployment.SuspendLayout();
             this.tabAlmDiff.SuspendLayout();
+            this.tabAlmMapper.SuspendLayout();
             this.SuspendLayout();
 
             // tabMain
@@ -51,6 +54,7 @@ namespace CopilotStudioHealthMonitor
             this.tabMain.Controls.Add(this.tabUsage);
             this.tabMain.Controls.Add(this.tabDeployment);
             this.tabMain.Controls.Add(this.tabAlmDiff);
+            this.tabMain.Controls.Add(this.tabAlmMapper);
             this.tabMain.Font = new System.Drawing.Font("Segoe UI", 9.5F);
 
             // tabDashboard
@@ -124,6 +128,15 @@ namespace CopilotStudioHealthMonitor
             this.almDiffTab.Dock = System.Windows.Forms.DockStyle.Fill;
             this.almDiffTab.DisableControls();
 
+            // tabAlmMapper
+            this.tabAlmMapper.Text = "🧬 ALM & Dependencies";
+            this.tabAlmMapper.Padding = new System.Windows.Forms.Padding(3);
+            this.tabAlmMapper.Controls.Add(this.almMapperTab);
+
+            // almMapperTab
+            this.almMapperTab.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.almMapperTab.DisableControls();
+
             // PluginControl
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -139,6 +152,7 @@ namespace CopilotStudioHealthMonitor
             this.tabUsage.ResumeLayout(false);
             this.tabDeployment.ResumeLayout(false);
             this.tabAlmDiff.ResumeLayout(false);
+            this.tabAlmMapper.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
@@ -159,5 +173,7 @@ namespace CopilotStudioHealthMonitor
         private CopilotStudioHealthMonitor.Controls.DeploymentTab deploymentTab;
         private System.Windows.Forms.TabPage tabAlmDiff;
         private CopilotStudioHealthMonitor.Controls.AlmDiffTab almDiffTab;
+        private System.Windows.Forms.TabPage tabAlmMapper;
+        private CopilotStudioHealthMonitor.Controls.AlmMapperTab almMapperTab;
     }
 }
