@@ -71,7 +71,12 @@ namespace CopilotStudioHealthMonitor.Controls
             dgvResults.DataSource = null;
             dgvResults.DataSource = _results;
 
-            lblScanCount.Text = $"{_results.Count} agents scanned";
+            // Top-10 baseline summary: how many agents are clean vs critical against the
+            // Microsoft "Top 10 Copilot Studio agent security risks" checks.
+            var clean = _results.Count(r => r.IssueCount == 0);
+            var critical = _results.Count(r => r.Score < 60);
+            lblScanCount.Text =
+                $"{_results.Count} agents scanned · {clean} clean · {critical} critical  (checks mapped to Microsoft Top-10 agent risks)";
             btnExportCsv.Enabled = _results.Count > 0;
 
             ColorCodeRows();

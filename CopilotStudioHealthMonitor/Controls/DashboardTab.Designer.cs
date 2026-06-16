@@ -15,12 +15,14 @@ namespace CopilotStudioHealthMonitor.Controls
         {
             this.pnlToolbar = new System.Windows.Forms.Panel();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnExportReport = new System.Windows.Forms.Button();
             this.lblLastRefreshed = new System.Windows.Forms.Label();
             this.pnlCards = new System.Windows.Forms.Panel();
             this.pnlActions = new System.Windows.Forms.Panel();
             this.btnJumpSecurity = new System.Windows.Forms.Button();
             this.btnJumpDeployment = new System.Windows.Forms.Button();
             this.btnJumpAlmDiff = new System.Windows.Forms.Button();
+            this.btnJumpUsage = new System.Windows.Forms.Button();
             this.lblActionsHint = new System.Windows.Forms.Label();
             this.pnlList = new System.Windows.Forms.Panel();
             this.dgvAgents = new System.Windows.Forms.DataGridView();
@@ -36,6 +38,7 @@ namespace CopilotStudioHealthMonitor.Controls
             this.pnlToolbar.Height = 44;
             this.pnlToolbar.Padding = new System.Windows.Forms.Padding(4, 6, 4, 4);
             this.pnlToolbar.Controls.Add(this.lblLastRefreshed);
+            this.pnlToolbar.Controls.Add(this.btnExportReport);
             this.pnlToolbar.Controls.Add(this.btnRefresh);
 
             // btnRefresh
@@ -45,10 +48,17 @@ namespace CopilotStudioHealthMonitor.Controls
             this.btnRefresh.Enabled = false;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
 
+            // btnExportReport
+            this.btnExportReport.Text = "📄 Export Governance Report";
+            this.btnExportReport.Size = new System.Drawing.Size(200, 28);
+            this.btnExportReport.Location = new System.Drawing.Point(170, 8);
+            this.btnExportReport.Enabled = false;
+            this.btnExportReport.Click += new System.EventHandler(this.btnExportReport_Click);
+
             // lblLastRefreshed
             this.lblLastRefreshed.Text = "Not loaded yet — connect to an org and click Refresh.";
             this.lblLastRefreshed.AutoSize = true;
-            this.lblLastRefreshed.Location = new System.Drawing.Point(174, 14);
+            this.lblLastRefreshed.Location = new System.Drawing.Point(378, 14);
             this.lblLastRefreshed.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.lblLastRefreshed.ForeColor = System.Drawing.Color.Gray;
 
@@ -63,6 +73,7 @@ namespace CopilotStudioHealthMonitor.Controls
             this.pnlActions.BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
             this.pnlActions.Padding = new System.Windows.Forms.Padding(6, 8, 6, 6);
             this.pnlActions.Controls.Add(this.lblActionsHint);
+            this.pnlActions.Controls.Add(this.btnJumpUsage);
             this.pnlActions.Controls.Add(this.btnJumpAlmDiff);
             this.pnlActions.Controls.Add(this.btnJumpDeployment);
             this.pnlActions.Controls.Add(this.btnJumpSecurity);
@@ -94,6 +105,13 @@ namespace CopilotStudioHealthMonitor.Controls
             this.btnJumpAlmDiff.Location = new System.Drawing.Point(536, 10);
             this.btnJumpAlmDiff.Enabled = false;
             this.btnJumpAlmDiff.Click += new System.EventHandler(this.btnJumpAlmDiff_Click);
+
+            // btnJumpUsage
+            this.btnJumpUsage.Text = "📈 Adoption";
+            this.btnJumpUsage.Size = new System.Drawing.Size(120, 28);
+            this.btnJumpUsage.Location = new System.Drawing.Point(654, 10);
+            this.btnJumpUsage.Enabled = false;
+            this.btnJumpUsage.Click += new System.EventHandler(this.btnJumpUsage_Click);
 
             // pnlList (fills remaining space between cards and actions)
             this.pnlList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -142,12 +160,14 @@ namespace CopilotStudioHealthMonitor.Controls
 
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnExportReport;
         private System.Windows.Forms.Label lblLastRefreshed;
         private System.Windows.Forms.Panel pnlCards;
         private System.Windows.Forms.Panel pnlActions;
         private System.Windows.Forms.Button btnJumpSecurity;
         private System.Windows.Forms.Button btnJumpDeployment;
         private System.Windows.Forms.Button btnJumpAlmDiff;
+        private System.Windows.Forms.Button btnJumpUsage;
         private System.Windows.Forms.Label lblActionsHint;
         private System.Windows.Forms.Panel pnlList;
         private System.Windows.Forms.DataGridView dgvAgents;

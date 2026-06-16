@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>CopilotStudioHealthMonitor</id>
-    <version>1.0.8</version>
+    <version>1.1.0</version>
     <title>Copilot Studio Agent Health Monitor</title>
     <authors>Manmohan</authors>
     <owners>Manmohan</owners>
@@ -13,15 +13,20 @@
     <description>An XrmToolBox plugin to audit, secure, and validate Microsoft Copilot Studio agents across Power Platform / Dataverse environments.
 
 Features:
-- Dashboard: KPI cards and risk-ranked agent table with health colour coding
+- Dashboard: KPI cards (incl. Dormant/Orphaned) and risk-ranked agent table with health colour coding; one-click Governance Report export
 - Agent Inventory: Full agent list with filter, owner info, auth mode, solution membership, and expandable bot components
-- Security Scanner: Automated 0-100 security score for every agent (SEC-01 No Auth, SEC-03 HTTP Actions, SEC-05 Orphaned Owner, SEC-07 Not in Solution) with per-issue remediation steps
+- Security Scanner: Automated 0-100 security score mapped to Microsoft's Top 10 Copilot Studio agent security risks (SEC-01 No Auth, SEC-03 HTTP Actions, SEC-04 Email Exfiltration, SEC-05 Orphaned Owner, SEC-06 Maker Auth, SEC-07 Not in Solution, SEC-08 MCP/Custom Tools, SEC-10 Hardcoded Secrets) with per-issue remediation steps
+- Sharing &amp; Access: Audit who each agent is shared with (users/teams) and at what access level; flags broadly-shared agents
+- Knowledge Sources: Inventory of grounding sources; flags public-website grounding and inactive knowledge components
+- Adoption &amp; Lifecycle: Flags dormant and orphaned agents using owner/edit-age signals plus real conversation usage when available
 - Deployment Readiness: Four pre-deployment checks (DEP-01 through DEP-04) with optional target-org verification
 - ALM Diff: Side-by-side bot component comparison across two environments (Match / Content Differs / Missing in Target / Only in Target)
+- Governance Report: Self-contained HTML report aggregating all findings with a Microsoft Top-10 scorecard
 
 Read-only - never writes to your environment. Requires Dataverse online with Copilot Studio enabled.</description>
     <summary>Audit, secure and validate Copilot Studio agents across Power Platform environments from within XrmToolBox.</summary>
     <releaseNotes>
+1.1.0 - Major feature release. New tabs: Sharing &amp; Access audit, Knowledge Sources inventory, and Adoption &amp; Lifecycle (dormant/orphaned-agent analytics). Security Scanner expanded to Microsoft's Top 10 Copilot Studio agent security risks: added SEC-04 (email exfiltration), SEC-06 (maker authentication), SEC-08 (MCP/custom tools), SEC-10 (hardcoded secrets), and hardened SEC-03 (insecure HTTP). New one-click Governance Report (HTML) export from the Dashboard, plus a Dormant/Orphaned KPI card.
 1.0.8 - Use real XrmToolBox dependency version 1.2023.10.67 (1.2024.9.69 didn't exist on nuget.org which caused xrmtoolbox.com validator to reject as "version dependency missing")
 1.0.7 - Wrap XrmToolBox dependency in &lt;group targetFramework="any"&gt; with range version
 1.0.6 - Switched to iconUrl and removed NuGet 5+ features (icon/license/readme elements) to fix xrmtoolbox.com validator dependency format

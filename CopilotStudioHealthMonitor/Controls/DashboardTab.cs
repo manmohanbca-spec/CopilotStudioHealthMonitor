@@ -16,11 +16,14 @@ namespace CopilotStudioHealthMonitor.Controls
         private Label _lblCriticalNumber;
         private Label _lblNoAuthNumber;
         private Label _lblOrphanedNumber;
+        private Label _lblDormantNumber;
 
         public event EventHandler RefreshDashboardRequested;
+        public event EventHandler ExportReportRequested;
         public event EventHandler<JumpToTabEventArgs> JumpToSecurityRequested;
         public event EventHandler<JumpToTabEventArgs> JumpToDeploymentRequested;
         public event EventHandler<JumpToTabEventArgs> JumpToAlmDiffRequested;
+        public event EventHandler JumpToUsageRequested;
 
         public DashboardTab()
         {
@@ -32,21 +35,25 @@ namespace CopilotStudioHealthMonitor.Controls
         public void DisableControls()
         {
             btnRefresh.Enabled = false;
+            btnExportReport.Enabled = false;
         }
 
         public void EnableControls()
         {
             btnRefresh.Enabled = true;
+            btnExportReport.Enabled = true;
         }
 
         private void CreateCards()
         {
-            int cardW = 210, cardH = 90, gap = 10, startX = 8, startY = 8;
+            // Five cards — sized so they fit side-by-side at the default width.
+            int cardW = 185, cardH = 90, gap = 8, startX = 8, startY = 8;
 
             _lblTotalNumber    = AddCard("Total Agents",           Color.FromArgb(0, 102, 180),  startX, startY, cardW, cardH);
             _lblCriticalNumber = AddCard("Critical (score < 60)",  Color.FromArgb(168, 0, 0),    startX + (cardW + gap),     startY, cardW, cardH);
             _lblNoAuthNumber   = AddCard("No Authentication",       Color.FromArgb(186, 85, 0),   startX + (cardW + gap) * 2, startY, cardW, cardH);
             _lblOrphanedNumber = AddCard("Orphaned Owners",         Color.FromArgb(100, 70, 0),   startX + (cardW + gap) * 3, startY, cardW, cardH);
+            _lblDormantNumber  = AddCard("Dormant / Orphaned",      Color.FromArgb(120, 60, 120), startX + (cardW + gap) * 4, startY, cardW, cardH);
         }
 
         private Label AddCard(string title, Color bg, int x, int y, int w, int h)
@@ -111,6 +118,13 @@ namespace CopilotStudioHealthMonitor.Controls
             _lblNoAuthNumber.Text   = agents.Count(a => a.AuthenticationMode == 0).ToString();
             _lblOrphanedNumber.Text = agents.Count(a => a.OwnerDisabled).ToString();
 
+            // Layer-A dormant/orphaned heuristic (no extra query): disabled owner OR not edited in 90+
+            // days. The Adoption & Lifecycle tab adds real conversation-transcript usage on top of this.
+            var now = DateTime.UtcNow;
+            _lblDormantNumber.Text = agents.Count(a =>
+                a.OwnerDisabled ||
+                (a.ModifiedOn.HasValue && (now - a.ModifiedOn.Value).TotalDays >= 90)).ToString();
+
             // Build risk-ranked rows (worst score first)
             var scoreMap = scanResults.ToDictionary(r => r.AgentId, r => r);
             _rows = agents
@@ -157,6 +171,11 @@ namespace CopilotStudioHealthMonitor.Controls
             RefreshDashboardRequested?.Invoke(this, EventArgs.Empty);
         }
 
+        private void btnExportReport_Click(object sender, EventArgs e)
+        {
+            ExportReportRequested?.Invoke(this, EventArgs.Empty);
+        }
+
         private void dgvAgents_SelectionChanged(object sender, EventArgs e)
         {
             UpdateActionButtons();
@@ -169,6 +188,7 @@ namespace CopilotStudioHealthMonitor.Controls
             btnJumpSecurity.Enabled   = hasSelection;
             btnJumpDeployment.Enabled = hasSelection;
             btnJumpAlmDiff.Enabled    = hasSelection;
+            btnJumpUsage.Enabled      = true; // adoption view is agent-agnostic — always available
         }
 
         private DashboardAgentRow SelectedRow =>
@@ -195,6 +215,11 @@ namespace CopilotStudioHealthMonitor.Controls
             var row = SelectedRow;
             if (row == null) return;
             JumpToAlmDiffRequested?.Invoke(this, new JumpToTabEventArgs { AgentId = row.AgentId, AgentName = row.Name });
+        }
+
+        private void btnJumpUsage_Click(object sender, EventArgs e)
+        {
+            JumpToUsageRequested?.Invoke(this, EventArgs.Empty);
         }
     }
 

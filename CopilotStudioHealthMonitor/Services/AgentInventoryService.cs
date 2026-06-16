@@ -61,7 +61,8 @@ namespace CopilotStudioHealthMonitor.Services
             var allComponents = GetBotComponents(agentId);
             agent.Topics = allComponents.Where(c => c.ComponentType == 0).ToList();
             agent.Actions = allComponents.Where(c => c.ComponentType == 1).ToList();
-            agent.KnowledgeSources = allComponents.Where(c => c.ComponentType == 9).ToList();
+            // Knowledge sources are componenttype 16; uploaded files are 14 (not 9 — that's Topic V2).
+            agent.KnowledgeSources = allComponents.Where(c => c.ComponentType == 16 || c.ComponentType == 14).ToList();
 
             return agent;
         }
@@ -74,6 +75,7 @@ namespace CopilotStudioHealthMonitor.Services
     <attribute name='name' />
     <attribute name='componenttype' />
     <attribute name='content' />
+    <attribute name='data' />
     <attribute name='statecode' />
     <filter>
       <condition attribute='parentbotid' operator='eq' value='{0}' />
@@ -85,19 +87,62 @@ namespace CopilotStudioHealthMonitor.Services
             var components = new List<BotComponentModel>();
 
             foreach (var entity in results.Entities)
-            {
-                components.Add(new BotComponentModel
-                {
-                    ComponentId = entity.Id,
-                    Name = entity.GetAttributeValue<string>("name"),
-                    ComponentType = entity.GetAttributeValue<OptionSetValue>("componenttype")?.Value ?? -1,
-                    Content = entity.GetAttributeValue<string>("content"),
-                    StateCode = entity.GetAttributeValue<OptionSetValue>("statecode")?.Value ?? 0
-                });
-            }
+                components.Add(MapComponent(entity));
 
             return components;
         }
+
+        /// <summary>
+        /// Fetches every botcomponent in the environment in a single query, grouped by parent bot.
+        /// Use this instead of calling GetBotComponents() inside a per-agent loop to avoid an N+1
+        /// query pattern (mirrors KnowledgeSourceInventoryService's one-shot fetch). All component
+        /// types are returned (0/9 topics, 1 actions, 14/16 knowledge) so callers can scan content.
+        /// </summary>
+        public Dictionary<Guid, List<BotComponentModel>> GetAllBotComponentsByBot()
+        {
+            // Paged QueryExpression — a single RetrieveMultiple caps at 5000 rows, which a large
+            // org's botcomponent table easily exceeds; without paging, components (and the security
+            // findings that depend on them) would be silently dropped.
+            var query = new QueryExpression("botcomponent")
+            {
+                ColumnSet = new ColumnSet("name", "componenttype", "content", "data", "statecode", "parentbotid"),
+                PageInfo = new PagingInfo { Count = 5000, PageNumber = 1 }
+            };
+
+            var map = new Dictionary<Guid, List<BotComponentModel>>();
+            while (true)
+            {
+                var page = _service.RetrieveMultiple(query);
+                foreach (var entity in page.Entities)
+                {
+                    var parentId = entity.GetAttributeValue<EntityReference>("parentbotid")?.Id ?? Guid.Empty;
+                    if (parentId == Guid.Empty) continue;
+
+                    if (!map.TryGetValue(parentId, out var list))
+                    {
+                        list = new List<BotComponentModel>();
+                        map[parentId] = list;
+                    }
+                    list.Add(MapComponent(entity));
+                }
+
+                if (!page.MoreRecords) break;
+                query.PageInfo.PageNumber++;
+                query.PageInfo.PagingCookie = page.PagingCookie;
+            }
+
+            return map;
+        }
+
+        private static BotComponentModel MapComponent(Entity entity) => new BotComponentModel
+        {
+            ComponentId = entity.Id,
+            Name = entity.GetAttributeValue<string>("name"),
+            ComponentType = entity.GetAttributeValue<OptionSetValue>("componenttype")?.Value ?? -1,
+            Content = entity.GetAttributeValue<string>("content"),
+            Data = entity.GetAttributeValue<string>("data"),
+            StateCode = entity.GetAttributeValue<OptionSetValue>("statecode")?.Value ?? 0
+        };
 
         public bool IsAgentInSolution(Guid agentId)
         {

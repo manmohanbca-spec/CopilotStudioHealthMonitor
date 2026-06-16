@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using CopilotStudioHealthMonitor.Controls;
 using CopilotStudioHealthMonitor.Models;
@@ -16,6 +18,10 @@ namespace CopilotStudioHealthMonitor
         private SecurityScannerService _securityScanner;
         private DeploymentReadinessService _deploymentService;
         private AlmDiffService _almDiffService;
+        private SharingAuditService _sharingService;
+        private KnowledgeSourceInventoryService _knowledgeService;
+        private UsageAnalyticsService _usageService;
+        private readonly GovernanceReportService _reportService = new GovernanceReportService();
 
         public PluginControl()
         {
@@ -28,14 +34,19 @@ namespace CopilotStudioHealthMonitor
             inventoryTab.LoadAgentsRequested += OnLoadAgentsRequested;
             inventoryTab.LoadComponentsRequested += OnLoadComponentsRequested;
             securityTab.RunScanRequested += OnRunScanRequested;
+            sharingTab.RunSharingAuditRequested += OnRunSharingAuditRequested;
+            knowledgeSourceTab.RunKnowledgeInventoryRequested += OnRunKnowledgeInventoryRequested;
+            usageTab.RunUsageAnalysisRequested += OnRunUsageAnalysisRequested;
             deploymentTab.RunChecksRequested += OnRunDeploymentChecksRequested;
             deploymentTab.ConnectTargetOrgRequested += OnConnectTargetOrgRequested;
             almDiffTab.ConnectTargetOrgRequested += OnConnectTargetOrgRequested;
             almDiffTab.RunDiffRequested += OnRunDiffRequested;
             dashboardTab.RefreshDashboardRequested += OnRefreshDashboardRequested;
+            dashboardTab.ExportReportRequested += OnExportReportRequested;
             dashboardTab.JumpToSecurityRequested += OnJumpToSecurityRequested;
             dashboardTab.JumpToDeploymentRequested += OnJumpToDeploymentRequested;
             dashboardTab.JumpToAlmDiffRequested += OnJumpToAlmDiffRequested;
+            dashboardTab.JumpToUsageRequested += OnJumpToUsageRequested;
         }
 
         public override void UpdateConnection(IOrganizationService newService,
@@ -58,11 +69,17 @@ namespace CopilotStudioHealthMonitor
             _securityScanner = new SecurityScannerService(_inventoryService);
             _deploymentService = new DeploymentReadinessService(newService);
             _almDiffService = new AlmDiffService(_inventoryService);
+            _sharingService = new SharingAuditService(newService);
+            _knowledgeService = new KnowledgeSourceInventoryService(newService);
+            _usageService = new UsageAnalyticsService(newService);
 
             inventoryTab.SetService(_inventoryService);
             securityTab.SetService(_securityScanner);
             deploymentTab.SetService(_deploymentService);
             almDiffTab.SetService(_almDiffService);
+            sharingTab.SetService(_sharingService);
+            knowledgeSourceTab.SetService(_knowledgeService);
+            usageTab.SetService(_usageService);
             dashboardTab.EnableControls();
 
             LoadAgents();
@@ -162,6 +179,108 @@ namespace CopilotStudioHealthMonitor
 
                     var results = e.Result as List<AgentSecurityResult>;
                     securityTab.PopulateResults(results);
+                }
+            });
+        }
+
+        private void OnRunSharingAuditRequested(object sender, RunSharingAuditEventArgs e)
+        {
+            RunSharingAudit();
+        }
+
+        private void RunSharingAudit()
+        {
+            if (_sharingService == null || _inventoryService == null) return;
+
+            WorkAsync(new WorkAsyncInfo("Auditing agent sharing...", (e) =>
+            {
+                // Load agents once and feed them to the audit service, matching the
+                // dashboard pattern of avoiding a redundant GetAllAgents() call.
+                var agents = _inventoryService.GetAllAgents();
+                e.Result = _sharingService.AuditAgents(agents);
+            })
+            {
+                PostWorkCallBack = (e) =>
+                {
+                    if (e.Error != null)
+                    {
+                        MessageBox.Show(
+                            $"Sharing audit failed:\n{e.Error.Message}",
+                            "Audit Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var results = e.Result as List<AgentSharingResult>;
+                    sharingTab.PopulateResults(results);
+                }
+            });
+        }
+
+        private void OnRunKnowledgeInventoryRequested(object sender, RunKnowledgeInventoryEventArgs e)
+        {
+            RunKnowledgeInventory();
+        }
+
+        private void RunKnowledgeInventory()
+        {
+            if (_knowledgeService == null || _inventoryService == null) return;
+
+            WorkAsync(new WorkAsyncInfo("Inventorying knowledge sources...", (e) =>
+            {
+                var agents = _inventoryService.GetAllAgents();
+                e.Result = _knowledgeService.InventoryAgents(agents);
+            })
+            {
+                PostWorkCallBack = (e) =>
+                {
+                    if (e.Error != null)
+                    {
+                        MessageBox.Show(
+                            $"Knowledge inventory failed:\n{e.Error.Message}",
+                            "Inventory Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var results = e.Result as List<KnowledgeAuditResult>;
+                    knowledgeSourceTab.PopulateResults(results);
+                }
+            });
+        }
+
+        private void OnRunUsageAnalysisRequested(object sender, RunUsageAnalysisEventArgs e)
+        {
+            RunUsageAnalysis();
+        }
+
+        private void RunUsageAnalysis()
+        {
+            if (_usageService == null || _inventoryService == null) return;
+
+            WorkAsync(new WorkAsyncInfo("Analyzing agent adoption & lifecycle...", (e) =>
+            {
+                var agents = _inventoryService.GetAllAgents();
+                var results = _usageService.AnalyzeAgents(agents);
+                e.Result = Tuple.Create(results, _usageService.UsageDataAvailable, _usageService.UsageScanTruncated);
+            })
+            {
+                PostWorkCallBack = (e) =>
+                {
+                    if (e.Error != null)
+                    {
+                        MessageBox.Show(
+                            $"Adoption analysis failed:\n{e.Error.Message}",
+                            "Analysis Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var data = e.Result as Tuple<List<AgentUsageResult>, bool, bool>;
+                    usageTab.PopulateResults(data.Item1, data.Item2, data.Item3);
                 }
             });
         }
@@ -299,6 +418,59 @@ namespace CopilotStudioHealthMonitor
             });
         }
 
+        private void OnExportReportRequested(object sender, EventArgs e)
+        {
+            if (_inventoryService == null) return;
+
+            var orgName = ConnectionDetail?.OrganizationFriendlyName
+                ?? ConnectionDetail?.ConnectionName
+                ?? "Dataverse";
+
+            WorkAsync(new WorkAsyncInfo("Building governance report (gathering all sections)...", (w) =>
+            {
+                // Load agents once and feed every audit, mirroring the dashboard refresh pattern.
+                var agents = _inventoryService.GetAllAgents();
+                var security = _securityScanner.ScanAgents(agents);
+                var sharing = _sharingService.AuditAgents(agents);
+                var knowledge = _knowledgeService.InventoryAgents(agents);
+                var usage = _usageService.AnalyzeAgents(agents);
+                w.Result = _reportService.BuildHtml(
+                    orgName, DateTime.UtcNow, agents, security, sharing, knowledge, usage);
+            })
+            {
+                PostWorkCallBack = (w) =>
+                {
+                    if (w.Error != null)
+                    {
+                        MessageBox.Show(
+                            $"Report export failed:\n{w.Error.Message}",
+                            "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var html = w.Result as string;
+                    if (string.IsNullOrEmpty(html)) return;
+
+                    using (var dialog = new SaveFileDialog())
+                    {
+                        dialog.Filter = "HTML report (*.html)|*.html";
+                        dialog.FileName = $"CopilotGovernanceReport_{DateTime.Now:yyyyMMdd_HHmmss}.html";
+                        if (dialog.ShowDialog() != DialogResult.OK) return;
+
+                        File.WriteAllText(dialog.FileName, html, System.Text.Encoding.UTF8);
+
+                        if (MessageBox.Show(
+                                $"Report saved to:\n{dialog.FileName}\n\nOpen it now?",
+                                "Report Ready", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                        {
+                            try { Process.Start(new ProcessStartInfo(dialog.FileName) { UseShellExecute = true }); }
+                            catch { /* opening is best-effort */ }
+                        }
+                    }
+                }
+            });
+        }
+
         private void OnJumpToSecurityRequested(object sender, JumpToTabEventArgs e)
         {
             tabMain.SelectedTab = tabSecurity;
@@ -313,6 +485,11 @@ namespace CopilotStudioHealthMonitor
         private void OnJumpToAlmDiffRequested(object sender, JumpToTabEventArgs e)
         {
             tabMain.SelectedTab = tabAlmDiff;
+        }
+
+        private void OnJumpToUsageRequested(object sender, EventArgs e)
+        {
+            tabMain.SelectedTab = tabUsage;
         }
     }
 }
