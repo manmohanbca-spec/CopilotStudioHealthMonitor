@@ -33,7 +33,7 @@
 3. Open the plugin — agents load automatically
 4. Use the **Dashboard** for an instant health overview, or drill into individual tabs
 
-See the full [User Guide](USER_GUIDE.md) for detailed instructions on every feature.
+See the full [User Guide](https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor/blob/master/USER_GUIDE.md) for detailed instructions on every feature.
 
 ---
 
@@ -48,7 +48,7 @@ See the full [User Guide](USER_GUIDE.md) for detailed instructions on every feat
 
 ### Manual (DLL drop)
 
-1. Download `CopilotStudioHealthMonitor.dll` from [Releases](../../releases)
+1. Download `CopilotStudioHealthMonitor.dll` from [Releases](https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor/releases)
 2. Copy to `%APPDATA%\MscrmTools\XrmToolBox\Plugins\`
 3. Restart XrmToolBox
 
@@ -135,4 +135,4 @@ Pull requests are welcome. Please open an issue first for significant changes.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
+MIT — see [LICENSE](https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor/blob/master/LICENSE)

@@ -9,6 +9,7 @@
     <projectUrl>https://github.com/manmohanbca-spec/CopilotStudioHealthMonitor</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/manmohanbca-spec/CopilotStudioHealthMonitor/master/icon.png</iconUrl>
     <licenseUrl>https://raw.githubusercontent.com/manmohanbca-spec/CopilotStudioHealthMonitor/master/LICENSE</licenseUrl>
+    <readme>docs\README.md</readme>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An XrmToolBox plugin to audit, secure, and validate Microsoft Copilot Studio agents across Power Platform / Dataverse environments.
 
@@ -49,6 +50,7 @@ Read-only - never writes to your environment. Requires Dataverse online with Cop
     </dependencies>
   </metadata>
   <files>
+    <file src="..\README.md" target="docs\README.md" />
     <file src="bin\Release\CopilotStudioHealthMonitor.dll" target="lib\net452\Plugins" />
   </files>
 </package>
