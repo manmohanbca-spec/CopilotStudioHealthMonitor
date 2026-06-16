@@ -1,6 +1,6 @@
 # Copilot Studio Agent Health Monitor — User Guide
 
-**Version 1.2.0 | XrmToolBox Plugin | Power Platform**
+**Version 1.2.1 | XrmToolBox Plugin | Power Platform**
 
 ---
 
